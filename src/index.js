@@ -22,17 +22,11 @@ class LoginComponent extends React.Component {
 
   render() {
     const isLoggedIn = this.state.isUserLoggedIn;
-    let button;
-    if (isLoggedIn) {
-      button = <LogoutButton onClick={this.handleLogoutClick} />;
-    } else {
-      button = <LoginButton onClick={this.handleLoginClick} />;
-    }
-
     return (
       <div>
         <Greeting isLoggedIn={isLoggedIn} />
-        {button}
+        {isLoggedIn && <LogoutButton onClick={this.handleLogoutClick} />}
+        {!isLoggedIn && <LoginButton onClick={this.handleLoginClick} />}
       </div>
     );
   }
@@ -42,12 +36,30 @@ class Mailbox extends React.Component {
   constructor(props) {
     super(props);
     //this.state = { messages: []}
-    this.state = { messages: ["Message 1", "RE Message1", "FW Message 2"] };
+    this.state = {
+      messages: ["Message 1", "RE Message1", "FW Message2", "Hello"]
+    };
   }
 
   render() {
-    let messages = this.state.messages.length;
-    return <div>{messages > 0 && <h3> You have {messages} messages!</h3>}</div>;
+    const messages = this.state.messages.length;
+    const messageItems = this.state.messages.map((message, i) => (
+      <li key={i++} class="list-group-item">
+        {i++}: {message}
+      </li>
+    ));
+    //or directly after <ul> {this.state.messages.map((message) => (<li>{message}</li>))};
+
+    return (
+      <div>
+        {messages > 0 && (
+          <div class="alert alert-success"> You have {messages} messages!</div>
+        )}
+        <div>
+          <ul class="list-group list-group-flush">{messageItems}</ul>
+        </div>
+      </div>
+    );
   }
 }
 
@@ -55,30 +67,35 @@ function Greeting(props) {
   let isLoggedIn = props.isLoggedIn;
   if (isLoggedIn) {
     return (
-      <div>
-        <table width="100%">
-          <tr>
-            <td>
-              <UserGreeting />
-            </td>
-            <td>
-              <Mailbox />
-            </td>
-          </tr>
-        </table>
+      <div class="jumbotron jumbotron-fluid">
+        <UserGreeting />
+        <Mailbox />
       </div>
     );
   } else {
-    return <GuestGreeting />;
+    return (
+      <div class="jumbotron jumbotron-fluid">
+        <GuestGreeting />
+      </div>
+    );
   }
 }
 
-function LoginButton(props) {
-  return <button onClick={props.onClick}>Login</button>;
+function LogoutButton(props) {
+  return (
+    <button class="btn btn-primary" onClick={props.onClick}>
+      Logout
+    </button>
+  );
 }
 
-function LogoutButton(props) {
-  return <button onClick={props.onClick}>Logout</button>;
+function LoginButton(props) {
+  console.log(props);
+  return (
+    <button class="btn btn-primary" onClick={props.onClick}>
+      Login
+    </button>
+  );
 }
 
 function UserGreeting() {
